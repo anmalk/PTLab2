@@ -24,9 +24,10 @@ class PurchaseCreate(CreateView):
     
 def purchase_form(request):
     quantities = {}
+    price = 0
     total_price = 0
     items = []
-
+    discount = 0
     # Получение данных из запроса
     for key, value in request.POST.items():
         if key.startswith('quantity_') and value:
@@ -35,17 +36,24 @@ def purchase_form(request):
             product = Product.objects.get(pk=product_id)
 
             total_item_price = product.price * quantity
-            total_price += total_item_price
+            price += total_item_price
 
             items.append({
                 'product': product,
                 'quantity': quantity,
                 'total_item_price': total_item_price,
             })
+        if len(items) > 1:
+            discount = 0.1*price
+            total_price = 0.9*price
+        else: total_price = price
 
+    
     context = {
         'items': items,
+        'price': price,
         'total_price': total_price,
+        'discount': discount,
     }
 
     return render(request, 'shop/purchase_form.html', context)
