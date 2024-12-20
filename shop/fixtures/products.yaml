@@ -1,7 +1,7 @@
 - model: shop.product
   pk: 1
   fields:
-    name: Футболка
+    name: Футбо
     price: 2000
 - model: shop.product
   pk: 2
@@ -12,4 +12,14 @@
   pk: 3
   fields:
     name: Кепка
+    price: 500
+- model: shop.product
+  pk: 4
+  fields:
+    name: Майка
+    price: 500
+- model: shop.product
+  pk: 5
+  fields:
+    name: Кросс
     price: 500

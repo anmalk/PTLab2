@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Товары</title>
+    <title>Список товаров</title>
 </head>
 <body class="bg-gray-100 min-h-screen flex justify-center items-center">
     <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl">
@@ -13,26 +14,75 @@
                 <tr class="bg-gray-200 text-gray-700">
                     <th class="border border-gray-300 px-4 py-2 text-left">Наименование</th>
                     <th class="border border-gray-300 px-4 py-2 text-left">Цена</th>
-                    <th class="border border-gray-300 px-4 py-2text-left">Действие</th>
+                    <th class="border border-gray-300 px-4 py-2 text-left">Количество</th>
                 </tr>
             </thead>
             <tbody>
-                {% for p in products %}
+                {% for product in products %}
                 <tr class="hover:bg-gray-100">
-                    <td class="border border-gray-300 px-4 py-2">{{ p.name }}</td>
-                    <td class="border border-gray-300 px-4 py-2">{{ p.price }}</td>
-                    <td class="border border-gray-300 px-4 py-2 text-center">
-                        <a 
-                            href="/buy/{{ p.id }}" 
-                            class="text-indigo-600 hover:underline"
+                    <td class="border border-gray-300 px-4 py-2">{{ product.name }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ product.price }} руб.</td>
+                    <td class="border border-gray-300 px-4 py-2">
+                        <select
+                            id="quantity-{{ product.id }}"
+                            class="w-24 p-2 border border-gray-300 rounded"
+                            onchange="updateQuantity({{ product.id }})"
                         >
-                            Купить
-                        </a>
+                            <option value="">Выберите количество</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        <div class="text-right mt-6">
+            <a id="checkout-button"
+                class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded"
+                href="javascript:void(0);" onclick="proceedToPurchaseForm()">
+                Оформить заказ (0)
+            </a>
+        </div>
     </div>
+    <script>
+        let cart = {};  // Переменная для хранения товаров в корзине
+
+        // Функция для обновления количества товара в корзине
+        function updateQuantity(productId) {
+            const quantity = document.getElementById(`quantity-${productId}`).value;
+            if (quantity) {
+                cart[productId] = parseInt(quantity);  // Сохраняем количество товара в корзине
+            } else {
+                delete cart[productId];  // Если количество не выбрано, удаляем товар из корзины
+            }
+            updateCheckoutButton();  // Обновляем текст кнопки
+        }
+
+        // Функция для обновления текста кнопки оформления заказа
+        function updateCheckoutButton() {
+            const checkoutButton = document.getElementById('checkout-button');
+            const totalQuantity = Object.values(cart).reduce((sum, quantity) => sum + quantity, 0);
+            checkoutButton.textContent = `Оформить заказ (${totalQuantity})`;
+        }
+
+        // Функция для перехода на форму оформления заказа
+        function proceedToPurchaseForm() {
+            const selectedProducts = Object.entries(cart).map(([productId, quantity]) => {
+                return `${productId}=${quantity}`;  // Формируем строку "id=quantity"
+            }).join('&');
+
+            if (selectedProducts) {
+                // Формируем URL с параметрами
+                const url = `/purchase_form/?${selectedProducts}`;
+                window.location.href = url;  // Переход на страницу с параметрами
+            } else {
+                alert('Выберите хотя бы один товар для оформления заказа.');
+            }
+        }
+    </script>
 </body>
 </html>
