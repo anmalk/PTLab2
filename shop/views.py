@@ -57,3 +57,17 @@ def purchase_form(request):
     }
 
     return render(request, 'shop/purchase_form.html', context)
+
+def finalize_purchase(request):
+    # Получаем данные из POST-запроса
+    name = request.POST.get('name', 'Уважаемый клиент')  # Имя клиента
+    address = request.POST.get('address', 'Адрес не указан')  # Адрес доставки
+
+    # Передача данных в шаблон
+    context = {
+        'name': name,
+        'address': address,
+    }
+    print(context)
+
+    return render(request, 'shop/finalize_purchase.html', context)

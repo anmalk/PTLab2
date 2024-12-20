@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Спасибо за покупку!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-r from-green-50 via-white to-green-50 min-h-screen flex justify-center items-center">
+    <div class="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-2xl">
+        <div class="text-center">
+            <h1 class="text-3xl font-extrabold text-gray-800 mb-6">🎉 Спасибо за вашу покупку, {{ name }}!</h1>
+            <p class="text-gray-600 text-lg mb-6">
+                Мы благодарим вас за доверие и выбор нашего магазина. Ваш заказ скоро будет обработан и отправлен по указанному адресу.
+            </p>
+            <div class="bg-green-50 p-6 rounded-lg shadow-md">
+                <p class="text-gray-700 font-medium text-lg">📦 Адрес доставки:</p>
+                <p class="text-gray-800 font-semibold text-xl mt-2">{{ address }}</p>
+            </div>
+        </div>
+        <div class="text-center mt-8">
+            <a href="/" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:shadow-xl transform transition-transform duration-200 hover:scale-105">
+                🔙 Вернуться на главную
+            </a>
+        </div>
+    </div>
+</body>
+</html>
