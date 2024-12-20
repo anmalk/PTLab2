@@ -48,7 +48,7 @@
 <p>Базы данных: PostgreSQL </p>
 
 ### ERD-диаграмма:
-![image](https://github.com/user-attachments/assets/52485032-db66-43ed-b73e-b3e880c18ca1)
+![image](https://github.com/user-attachments/assets/488f1073-0ff2-4dc5-8d50-4f4344a59bd4)
 
 ### Выводы:
 Было разработано веб-приложение согласно индивидуальному заданию, протестировано разработанное веб-приложение, проблем выявено не было.
