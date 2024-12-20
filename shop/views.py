@@ -22,26 +22,26 @@ class PurchaseCreate(CreateView):
         # Здесь можно обработать создание нескольких покупок для каждого товара
         return redirect('purchase_form')  # Перенаправление после успешной покупки
     
-
 def purchase_form(request):
-    # Предположим, что информация о выбранных товарах передается в POST запросе
-    selected_products = request.POST.getlist('products')  # Список ID товаров
-    quantities = request.POST.getlist('quantities')  # Список количеств для каждого товара
-
-    items = []
+    quantities = {}
     total_price = 0
+    items = []
 
-    # Находим товары в базе данных и подсчитываем стоимость
-    for product_id, quantity in zip(selected_products, quantities):
-        product = Product.objects.get(pk=product_id)
-        quantity = int(quantity)  # Убедимся, что это число
-        total_item_price = product.price * quantity
-        total_price += total_item_price
-        items.append({
-            'product': product,
-            'quantity': quantity,
-            'total_item_price': total_item_price,
-        })
+    # Получение данных из запроса
+    for key, value in request.POST.items():
+        if key.startswith('quantity_') and value:
+            product_id = int(key.split('_')[1])  # Извлечение ID товара
+            quantity = int(value)  # Количество
+            product = Product.objects.get(pk=product_id)
+
+            total_item_price = product.price * quantity
+            total_price += total_item_price
+
+            items.append({
+                'product': product,
+                'quantity': quantity,
+                'total_item_price': total_item_price,
+            })
 
     context = {
         'items': items,
