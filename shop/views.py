@@ -4,70 +4,69 @@ from django.views.generic.edit import CreateView
 
 from .models import Product, Purchase
 
-# Create your views here.
 def index(request):
     products = Product.objects.all()
     context = {'products': products}
     return render(request, 'shop/index.html', context)
 
-
-
 class PurchaseCreate(CreateView):
-    model = Purchase
-    fields = ['product', 'person', 'address']
+    model = Purchase  
+    fields = ['product', 'person', 'address']  
 
     def form_valid(self, form):
-        # Сохраняем покупку в базе данных
         self.object = form.save()
-        # Здесь можно обработать создание нескольких покупок для каждого товара
-        return redirect('purchase_form')  # Перенаправление после успешной покупки
-    
-def purchase_form(request):
-    quantities = {}
-    price = 0
-    total_price = 0
-    items = []
-    discount = 0
-    # Получение данных из запроса
-    for key, value in request.POST.items():
-        if key.startswith('quantity_') and value:
-            product_id = int(key.split('_')[1])  # Извлечение ID товара
-            quantity = int(value)  # Количество
-            product = Product.objects.get(pk=product_id)
 
+def purchase_form(request):
+    quantities = {}  # для хранения количества товаров
+    price = 0  # Общая стоимость товаров без скидки
+    total_price = 0  # Итоговая стоимость с учетом скидки
+    items = []  # Список покупок
+    discount = 0  # Сумма скидки
+
+    # Обработка данных из POST-запроса
+    for key, value in request.POST.items():
+        # Проверка, если ключ соответствует количеству товара
+        if key.startswith('quantity_') and value:
+            product_id = int(key.split('_')[1])  # Извлечение ID товара из ключа
+            quantity = int(value)  # Извлечение количества товара
+            product = Product.objects.get(pk=product_id)  # Получение товара по ID
+
+            # Подсчет стоимости текущего товара
             total_item_price = product.price * quantity
             price += total_item_price
 
+            # Добавление данных о товаре в список покупок
             items.append({
                 'product': product,
                 'quantity': quantity,
                 'total_item_price': total_item_price,
             })
-        if len(items) > 1:
-            discount = 0.1*price
-            total_price = 0.9*price
-        else: total_price = price
 
-    
+        # Если в корзине более одного товара, применяем скидку
+        if len(items) > 1:
+            discount = 0.1 * price  
+            total_price = 0.9 * price 
+        else:
+            total_price = price  
+
     context = {
-        'items': items,
-        'price': price,
-        'total_price': total_price,
-        'discount': discount,
+        'items': items,  
+        'price': price,  
+        'total_price': total_price,  
+        'discount': discount,  
     }
 
     return render(request, 'shop/purchase_form.html', context)
 
 def finalize_purchase(request):
-    # Получаем данные из POST-запроса
-    name = request.POST.get('name', 'Уважаемый клиент')  # Имя клиента
-    address = request.POST.get('address', 'Адрес не указан')  # Адрес доставки
+    name = request.POST.get('name', 'Уважаемый клиент')
+    address = request.POST.get('address', 'Адрес не указан')
 
-    # Передача данных в шаблон
     context = {
-        'name': name,
-        'address': address,
+        'name': name,  # Имя клиента
+        'address': address,  # Адрес доставки
     }
+
     print(context)
 
     return render(request, 'shop/finalize_purchase.html', context)
